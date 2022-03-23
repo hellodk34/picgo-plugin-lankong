@@ -1,12 +1,16 @@
 ## picgo-plugin-lankong
 
+[![下载](https://img.shields.io/npm/dm/picgo-plugin-lankong.svg?color=brightgreen)](https://npmcharts.com/compare/picgo-plugin-lankong?minimal=true)
+[![版本](https://img.shields.io/npm/v/picgo-plugin-lankong.svg?color=brightgreen)](https://www.npmjs.com/package/picgo-plugin-lankong)
+[![许可](https://img.shields.io/badge/license-mit-brightgreen.svg)](https://github.com/hellodk34/picgo-plugin-lankong/blob/master/License)
+
 这是一个为 [兰空图床](https://github.com/lsky-org/lsky-pro) 适配开发的 PicGo 图片上传插件。基于 `PicGo V2.3.0` 开发。
 
 ---
 
 # 安装和使用
 
-## 1. 在线安装
+## 1. 在线安装(**推荐**)
 
 打开 PicGo 详细窗口，选择插件设置，搜索 **lankong** (author 是 `hellodk`) 安装。
 
@@ -32,8 +36,8 @@ macOS: ~/Library/Application\ Support/picgo/
 - 填写 `token`
 - `Ignore certificate error` 开关请见下面说明
 
-由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中经常遇到 `certificate has expired` 错误，请打开开关 `Ignore certificate error` 即可成功上传。
+由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中可能遇到 `certificate has expired` 错误，请打开开关 `Ignore certificate error` 即可成功上传。
 
 # 开源许可证
 
-Released under the [MIT License](https://github.com/hellodk34/picgo-plugin-lankong/blob/main/LICENSE).
+Released under the [MIT License](https://github.com/hellodk34/picgo-plugin-lankong/blob/main/License).
