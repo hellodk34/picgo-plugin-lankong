@@ -8,34 +8,61 @@ module.exports = (ctx) => {
       config: config
     })
   }
-  const postOptions = (serverUrl, token, ignoreCertErr, fileName, image) => {
+  
+  const postOptions = (userConfig, fileName, image) => {
+
+    const serverUrl = userConfig.server
     if (serverUrl.endsWith("/")) {
       throw new Error("Server url cannot ends with /")
     }
+    const isV2 = userConfig.isV2
+    const token = userConfig.token
+    const ignoreCertErr = userConfig.ignoreCertErr
     let requestAgent = new https.Agent({
       // 此处需要取反 忽略证书错误 拒绝未授权证书选项
       rejectUnauthorized: !ignoreCertErr
     })
 
+    const v1Headers = {
+      'Content-Type': 'multipart/form-data',
+      'User-Agent': 'PicGo',
+      'Connection': 'keep-alive',
+      'token': token || undefined
+    }
+
+    const v1FormData = {
+      image: {
+        value: image,
+        options: {
+          filename: fileName
+        }
+      },
+      ssl: 'true'
+    }
+
+    const v2Headers = {
+      'Content-Type': 'multipart/form-data',
+      'User-Agent': 'PicGo',
+      'Connection': 'keep-alive',
+      'Authorization': token || undefined
+    }
+
+    const v2FormData = {
+      file: {
+        value: image,
+        options: {
+          filename: fileName
+        }
+      },
+      ssl: 'true'
+    }
+
     return {
       method: 'POST',
-      url: `${serverUrl}/api/upload`,
+      url: isV2 ? `${serverUrl}/api/v1/upload` : `${serverUrl}/api/upload`,
       agent: requestAgent,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'User-Agent': 'PicGo',
-        'Connection': 'keep-alive',
-        'token': token || undefined
-      },
-      formData: {
-        image: {
-          value: image,
-          options: {
-            filename: fileName
-          }
-        },
-        ssl: 'true'
-      }
+      headers: isV2 ? v2Headers : v1Headers,
+      formData: isV2 ? v2FormData : v1FormData
     }
   }
   const handle = async (ctx) => {
@@ -43,23 +70,23 @@ module.exports = (ctx) => {
     if (!userConfig) {
       throw new Error('Can\'t find uploader config')
     }
-    const serverUrl = userConfig.server
-    const token = userConfig.token
-    const ignoreCertErr = userConfig.ignoreCertErr
     const imgList = ctx.output
     for (let i in imgList) {
       let image = imgList[i].buffer
       if (!image && imgList[i].base64Image) {
         image = Buffer.from(imgList[i].base64Image, 'base64')
       }
-      const postConfig = postOptions(serverUrl, token, ignoreCertErr, imgList[i].fileName, image)
+      const postConfig = postOptions(userConfig, imgList[i].fileName, image)
       let body = await ctx.Request.request(postConfig)
 
       body = JSON.parse(body)
-      if (body.code === 200) {
+      let isV2 = userConfig.isV2
+      let condition = isV2 ? (body.status === true) : (body.code === 200)
+
+      if (condition) {
         delete imgList[i].base64Image
         delete imgList[i].buffer
-        imgList[i]['imgUrl'] = body.data.url
+        imgList[i]['imgUrl'] = isV2 ? body.data.links.url : body.data.url
       }
       else {
         ctx.emit('notification', {
@@ -78,6 +105,14 @@ module.exports = (ctx) => {
       userConfig = {}
     }
     return [
+      {
+        name: 'isV2',
+        type: 'confirm',
+        default: userConfig.isV2 || false,
+        message: '兰空图床版本 默认 V1 打开时为 V2',
+        required: true,
+        alias: 'Lsky Pro Version, closed is V1'
+      },
       {
         name: 'server',
         type: 'input',
@@ -101,7 +136,7 @@ module.exports = (ctx) => {
         message: '是否忽略证书错误，如果上传失败提示证书过期请设为 true',
         required: true,
         alias: 'Ignore certificate error'
-      },
+      }
     ]
   }
   return {
