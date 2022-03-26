@@ -15,6 +15,7 @@
 
 - v1.0.1 支持兰空图床 V1 的版本正式发布。released on 2022-03-22
 - v1.0.2 增加 `Lsky Pro Version` 开关，支持兰空图床 V2。开关默认关闭，关闭代表 V1，打开即可使用 V2 版本的兰空图床 API 上传。released on 2022-03-23
+- v1.0.3 表单增加存储策略 ID 录入，仅供 V2 用户使用。V1 以及 V2 使用默认存储策略时请留空。released on 2022-03-26
 
 ---
 
@@ -42,11 +43,12 @@ macOS: ~/Library/Application\ Support/picgo/
 
 ## 3. 使用方法
 
-![20220323140447](https://cdn.dogimg.com/pic/2022/03/23/623ab880d5eab.png)
+![20220326185939](https://cdn.dogimg.com/pic/2022/03/26/623ef21a78db4.png)
 
 - `Lsky Pro Version` 开关，默认是关闭状态，代表 V1，开启即可使用兰空图床 V2 版本 API
 - 填写图床的 `server url`，注意不要以 `/` 结束，比如 `https://example.com` 就是没问题的
 - 填写 `token`
+- `Strategy ID`，存储策略 ID，如果是 V1 或 V2 使用默认存储策略的用户，请留空；除非你知道具体 ID，否则请留空
 - `Ignore certificate error` 开关请见下面说明
 
 由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中可能遇到 `certificate has expired` 错误，请打开开关 `Ignore certificate error` 即可成功上传。

@@ -8,7 +8,7 @@ module.exports = (ctx) => {
       config: config
     })
   }
-  
+
   const postOptions = (userConfig, fileName, image) => {
 
     const serverUrl = userConfig.server
@@ -29,7 +29,6 @@ module.exports = (ctx) => {
       'Connection': 'keep-alive',
       'token': token || undefined
     }
-
     const v1FormData = {
       image: {
         value: image,
@@ -46,7 +45,7 @@ module.exports = (ctx) => {
       'Connection': 'keep-alive',
       'Authorization': token || undefined
     }
-
+    const strategyId = userConfig.strategyId
     const v2FormData = {
       file: {
         value: image,
@@ -54,15 +53,31 @@ module.exports = (ctx) => {
           filename: fileName
         }
       },
-      ssl: 'true'
+      ssl: 'true',
+      strategy_id: strategyId
+    }
+    // V2版本情况下，如果用户没有填写策略ID，删除 v2FormData 中的 key: strategy_id
+    if (!strategyId) {
+      delete v2FormData.strategy_id
     }
 
-    return {
-      method: 'POST',
-      url: isV2 ? `${serverUrl}/api/v1/upload` : `${serverUrl}/api/upload`,
-      agent: requestAgent,
-      headers: isV2 ? v2Headers : v1Headers,
-      formData: isV2 ? v2FormData : v1FormData
+    // 如果忽略证书错误开关打开则带上 http agent 访问，否则不需要带（以提高性能）
+    if (ignoreCertErr) {
+      return {
+        method: 'POST',
+        url: isV2 ? `${serverUrl}/api/v1/upload` : `${serverUrl}/api/upload`,
+        agent: requestAgent,
+        headers: isV2 ? v2Headers : v1Headers,
+        formData: isV2 ? v2FormData : v1FormData
+      }
+    }
+    else {
+      return {
+        method: 'POST',
+        url: isV2 ? `${serverUrl}/api/v1/upload` : `${serverUrl}/api/upload`,
+        headers: isV2 ? v2Headers : v1Headers,
+        formData: isV2 ? v2FormData : v1FormData
+      }
     }
   }
   const handle = async (ctx) => {
@@ -130,10 +145,18 @@ module.exports = (ctx) => {
         alias: 'Auth token'
       },
       {
+        name: 'strategyId',
+        type: 'input',
+        default: userConfig.strategyId,
+        required: false,
+        message: '选填, V1以及V2使用默认存储策略时请留空',
+        alias: 'Strategy ID'
+      },
+      {
         name: 'ignoreCertErr',
         type: 'confirm',
         default: userConfig.ignoreCertErr || false,
-        message: '是否忽略证书错误，如果上传失败提示证书过期请设为 true',
+        message: '是否忽略证书错误, 如果上传失败提示证书过期请设为true',
         required: true,
         alias: 'Ignore certificate error'
       }
