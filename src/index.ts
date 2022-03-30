@@ -15,13 +15,9 @@ module.exports = (ctx) => {
     if (serverUrl.endsWith("/")) {
       throw new Error("Server url cannot ends with /")
     }
-    const isV2 = userConfig.isV2
+    const isV2 = userConfig.lskyProVersion === 'isV2'
     const token = userConfig.token
     const ignoreCertErr = userConfig.ignoreCertErr
-    let requestAgent = new https.Agent({
-      // 此处需要取反 忽略证书错误 拒绝未授权证书选项
-      rejectUnauthorized: !ignoreCertErr
-    })
 
     const v1Headers = {
       'Content-Type': 'multipart/form-data',
@@ -63,6 +59,10 @@ module.exports = (ctx) => {
 
     // 如果忽略证书错误开关打开则带上 http agent 访问，否则不需要带（以提高性能）
     if (ignoreCertErr) {
+      let requestAgent = new https.Agent({
+        // 此处需要取反 忽略证书错误 拒绝未授权证书选项
+        rejectUnauthorized: !ignoreCertErr
+      })
       return {
         method: 'POST',
         url: isV2 ? `${serverUrl}/api/v1/upload` : `${serverUrl}/api/upload`,
@@ -95,7 +95,7 @@ module.exports = (ctx) => {
       let body = await ctx.Request.request(postConfig)
 
       body = JSON.parse(body)
-      let isV2 = userConfig.isV2
+      let isV2 = userConfig.lskyProVersion === 'isV2'
       let condition = isV2 ? (body.status === true) : (body.code === 200)
 
       if (condition) {
@@ -121,12 +121,22 @@ module.exports = (ctx) => {
     }
     return [
       {
-        name: 'isV2',
-        type: 'confirm',
-        default: userConfig.isV2 || false,
-        message: '兰空图床版本 默认 V1 打开时为 V2',
+        name: 'lskyProVersion',
+        type: 'list',
+        default: userConfig.lskyProVersion || 'isV1',
+        message: 'Choose a version',
+        choices: [
+          {
+            name: 'isV1',
+            value: 'isV1'
+          },
+          {
+            name: 'isV2',
+            value: 'isV2'
+          }
+        ],
         required: true,
-        alias: 'Lsky Pro Version, closed is V1'
+        alias: 'Lsky Pro Version'
       },
       {
         name: 'server',
