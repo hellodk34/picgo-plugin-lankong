@@ -17,6 +17,7 @@
 - v1.0.2 增加 `Lsky Pro Version` 开关，支持兰空图床 V2。开关默认关闭，关闭代表 V1，打开即可使用 V2 版本的兰空图床 API 上传。released on 2022-03-23
 - v1.0.3 表单增加存储策略 ID 录入，仅供 V2 用户使用。V1 以及 V2 使用默认存储策略时请留空。released on 2022-03-26
 - v1.0.4 版本选择改成下拉菜单样式; https agent 代理对象的创建放在分支条件中增加程序性能。released on 2022-03-30
+- v1.0.5 增加同步删除功能，仅支持 V2。released on 2022-03-30
 
 ---
 
@@ -44,12 +45,13 @@ macOS: ~/Library/Application\ Support/picgo/
 
 ## 3. 使用方法
 
-![4610b9a4eeb27](https://img.github.luxe/2022/4610b9a4eeb27.png)
+![20220330163603](https://img.github.luxe/2022/29d1b7c6bacb6.png)
 
-- `Lsky Pro Version` 开关，默认是关闭状态，代表 V1，开启即可使用兰空图床 V2 版本 API
+- `Lsky Pro Version` 在下拉菜单中选择 Lsky Pro 版本，`V1` 还是 `V2`，默认 `V1`
 - 填写图床的 `server url`，注意不要以 `/` 结束，比如 `https://example.com` 就是没问题的
 - 填写 `token`
 - `Strategy ID`，存储策略 ID，如果是 V1 或 V2 使用默认存储策略的用户，请留空；除非你知道具体 ID，否则请留空
+- `Sync Delete` 同步删除选项，只支持 `V2`，默认关闭，开启后在 PicGo 相册中删除图片可同步删除图床上的文件
 - `Ignore certificate error` 开关请见下面说明
 
 由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中可能遇到 `certificate has expired` 错误，请打开开关 `Ignore certificate error` 即可成功上传。

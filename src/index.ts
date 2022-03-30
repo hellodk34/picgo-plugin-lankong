@@ -1,4 +1,5 @@
 import https from 'https'
+import { ImgType } from './lib/interface'
 
 module.exports = (ctx) => {
   const register = () => {
@@ -7,7 +8,87 @@ module.exports = (ctx) => {
       name: 'lankong',
       config: config
     })
+
+    // 注册同步删除 remove 事件
+    ctx.on('remove', onDelete)
   }
+
+  async function onDelete(files, guiApi) {
+    let userConfig = ctx.getConfig('picBed.lankong')
+    const syncDelete = userConfig.syncDelete
+    // 如果同步删除按钮关闭则不执行
+    if (!syncDelete) {
+      return
+    }
+    const isV2 = userConfig.lskyProVersion === 'V2'
+    if (!isV2) {
+      ctx.emit('notification', {
+        title: `V1版本的兰空图床不支持同步删除，请关闭同步删除选项以抑制此通知`
+      })
+    }
+    const deleteList = files.filter(each => each.type === 'lankong')
+    if (deleteList.length === 0) {
+      return
+    }
+
+    for (let i = 0; i < deleteList.length; i++) {
+      const item = deleteList[i]
+      const deleteParam = GenDeleteParam(item, userConfig)
+      let body = await ctx.Request.request(deleteParam)
+
+      body = JSON.parse(body)
+      if (body.status === true) {
+        ctx.emit('notification', {
+          title: `${item.imgUrl} 同步删除成功`,
+          body: body.message
+        })
+      }
+      else {
+        ctx.emit('notification', {
+          title: `${item.imgUrl} 同步删除失败`,
+          body: body.message
+        })
+        throw new Error(body.message)
+      }
+    }
+  }
+
+  const GenDeleteParam = (img: ImgType, userConfig) => {
+    const token = userConfig.token
+    const ignoreCertErr = userConfig.ignoreCertErr
+    const serverUrl = userConfig.server
+    const currentImageKey = img.id
+
+    const v2Headers = {
+      'Accept': 'application/json',
+      'User-Agent': 'PicGo',
+      'Connection': 'keep-alive',
+      'Authorization': token || undefined
+    }
+
+    // 如果忽略证书错误开关打开则带上 http agent 访问，否则不需要带（以提高性能）
+    if (ignoreCertErr) {
+      let requestAgent = new https.Agent({
+        // 此处需要取反 忽略证书错误 拒绝未授权证书选项
+        rejectUnauthorized: !ignoreCertErr
+      })
+      return {
+        method: 'DELETE',
+        url: `${serverUrl}/api/v1/images/:${currentImageKey}`,
+        agent: requestAgent,
+        headers: v2Headers
+      }
+    }
+    else {
+      return {
+        method: 'DELETE',
+        url: `${serverUrl}/api/v1/images/:${currentImageKey}`,
+        headers: v2Headers
+      }
+    }
+
+  }
+
 
   const postOptions = (userConfig, fileName, image) => {
 
@@ -15,7 +96,7 @@ module.exports = (ctx) => {
     if (serverUrl.endsWith("/")) {
       throw new Error("Server url cannot ends with /")
     }
-    const isV2 = userConfig.lskyProVersion === 'isV2'
+    const isV2 = userConfig.lskyProVersion === 'V2'
     const token = userConfig.token
     const ignoreCertErr = userConfig.ignoreCertErr
 
@@ -95,13 +176,16 @@ module.exports = (ctx) => {
       let body = await ctx.Request.request(postConfig)
 
       body = JSON.parse(body)
-      let isV2 = userConfig.lskyProVersion === 'isV2'
+      let isV2 = userConfig.lskyProVersion === 'V2'
       let condition = isV2 ? (body.status === true) : (body.code === 200)
 
       if (condition) {
         delete imgList[i].base64Image
         delete imgList[i].buffer
         imgList[i]['imgUrl'] = isV2 ? body.data.links.url : body.data.url
+        if (isV2) {
+          imgList[i]['id'] = body.data.key
+        }
       }
       else {
         ctx.emit('notification', {
@@ -123,16 +207,16 @@ module.exports = (ctx) => {
       {
         name: 'lskyProVersion',
         type: 'list',
-        default: userConfig.lskyProVersion || 'isV1',
+        default: userConfig.lskyProVersion || 'V1',
         message: 'Choose a version',
         choices: [
           {
-            name: 'isV1',
-            value: 'isV1'
+            name: 'V1',
+            value: 'V1'
           },
           {
-            name: 'isV2',
-            value: 'isV2'
+            name: 'V2',
+            value: 'V2'
           }
         ],
         required: true,
@@ -169,6 +253,14 @@ module.exports = (ctx) => {
         message: '是否忽略证书错误, 如果上传失败提示证书过期请设为true',
         required: true,
         alias: 'Ignore certificate error'
+      },
+      {
+        name: 'syncDelete',
+        type: 'confirm',
+        default: userConfig.syncDelete || false,
+        message: '是否同步删除，只支持V2',
+        required: true,
+        alias: 'Sync Delete'
       }
     ]
   }
@@ -176,5 +268,6 @@ module.exports = (ctx) => {
     uploader: 'lankong',
     config: config,
     register
+    // guiMenu
   }
 }
