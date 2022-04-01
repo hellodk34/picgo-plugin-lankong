@@ -74,7 +74,7 @@ module.exports = (ctx) => {
       })
       return {
         method: 'DELETE',
-        url: `${serverUrl}/api/v1/images/:${currentImageKey}`,
+        url: `${serverUrl}/api/v1/images/${currentImageKey}`,
         agent: requestAgent,
         headers: v2Headers
       }
@@ -82,7 +82,7 @@ module.exports = (ctx) => {
     else {
       return {
         method: 'DELETE',
-        url: `${serverUrl}/api/v1/images/:${currentImageKey}`,
+        url: `${serverUrl}/api/v1/images/${currentImageKey}`,
         headers: v2Headers
       }
     }
@@ -120,6 +120,7 @@ module.exports = (ctx) => {
       'Content-Type': 'multipart/form-data',
       'User-Agent': 'PicGo',
       'Connection': 'keep-alive',
+      'Accept': 'application/json',
       'Authorization': token || undefined
     }
     const strategyId = userConfig.strategyId
