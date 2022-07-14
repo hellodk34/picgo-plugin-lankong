@@ -65,6 +65,8 @@ macOS: ~/Library/Application\ Support/picgo/
   https://image.example.com/api/v1/tokens
 ```
 
+此命令仅适用于 V2，V1 用户只需要进入个人设置页面复制、粘贴使用即可。
+
 ### 2. 使用 postman 等软件
 
 1. 兰空图床 V1 token 的获取方式很简单，注册后进入个人设置页面就能看到，复制后使用即可
@@ -75,13 +77,13 @@ macOS: ~/Library/Application\ Support/picgo/
       2. 请求方法: POST
       3. 设置请求头 `Accept` 的值为 `application/json`
       4. 请求体中使用 json 语法填入邮箱和密码
-        ```
-        {
-          "email": "your_username@example.com",
-          "password":"your_password"
-        }
-        ```
-      5. 请求成功后得到返回信息中的 `token`，使用 `Bearer ` 拼接拿到的 token 作为 `Auth token` 填入 PicGo 设置中。注意 Bearer 和 返回的 token 之间有个空格，请严格按照格式填写，程序不会校验这个细节
+          ```
+          {
+            "email": "your_username@example.com",
+            "password":"your_password"
+          }
+          ```
+      5. 请求成功后得到返回信息中的 `token`，使用 `Bearer ` 拼接拿到的 token 作为 `Auth Token` 填入 PicGo 设置中。注意 Bearer 和返回的 token 之间有个空格，请严格按照格式填写，程序不会校验这个细节
 
 如果觉得项目有用，欢迎点个免费的 star ⭐️️ 激励一下我。感谢！
 
