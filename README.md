@@ -49,31 +49,39 @@ macOS: ~/Library/Application\ Support/picgo/
 ![20220330163603](https://img.github.luxe/2022/29d1b7c6bacb6.png)
 
 - `Lsky Pro Version` 在下拉菜单中选择 Lsky Pro 版本，`V1` 还是 `V2`，默认 `V1`
-- 填写图床的 `server url`，注意不要以 `/` 结束，比如 `https://example.com` 就是没问题的
-- 填写 `token`
+- 填写图床的 `server url`，注意不要以 `/` 结束。比如 `https://image.example.com` ✅️，但是 `https://image.example.com/` ❌️
+- 填写 `Auth Token`
 - `Strategy ID`，存储策略 ID，如果是 V1 或 V2 使用默认存储策略的用户，请留空；除非你知道具体 ID，否则请留空
-- `Sync Delete` 同步删除选项，只支持 `V2`，默认关闭，开启后在 PicGo 相册中删除图片可同步删除图床上的文件
-- `Ignore certificate error` 开关请见下面说明
-
-由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中可能遇到 `certificate has expired` 错误，请打开开关 `Ignore certificate error` 即可成功上传。
+- `Sync Delete` 同步删除选项，只支持 `V2`，开启后在 PicGo 相册中删除图片可同步删除图床上的文件，默认关闭
+- `Ignore certificate error` 开关，默认关闭，请保持关闭，除非你遇到 `certificate has expired` 等证书报错才需要考虑将其开启。由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中遇到了 `certificate has expired` 错误，打开开关 `Ignore certificate error` 即可成功上传
 
 ## 补充说明 token 的获取方式
 
+### 1. 使用 cURL(**推荐**)
+
+```
+# curl -X POST -H "Accept: application/json" \
+  -d '{"email=YOUR_EMAIL_ADDRESS&password=YOUR_PASSWORD"}' \
+  https://image.example.com/api/v1/tokens
+```
+
+### 2. 使用 postman 等软件
+
 1. 兰空图床 V1 token 的获取方式很简单，注册后进入个人设置页面就能看到，复制后使用即可
-2. 兰空图床 V2 token 的获取方式：
-   1. 登录到一个 V2 版本的兰空图床，比如 https://dogimg.com 进入 API 接口页面 https://dogimg.com/api 查看获取一个 token 的方式
+2. 兰空图床 V2 token 的获取方式如下
+   1. 登录到一个 V2 版本的兰空图床，比如 https://image.example.com 进入 API 接口页面 https://image.example.com/api 查看获取一个 token 的方式
    2. 使用 postman 之类的 api 调试工具发起一个 http post 请求即可生成一个 token，请求时的细节如下
-      1. 请求 url: `https://dogimg.com/api/v1/tokens`
+      1. 请求 url: `https://image.example.com/api/v1/tokens`
       2. 请求方法: POST
       3. 设置请求头 `Accept` 的值为 `application/json`
       4. 请求体中使用 json 语法填入邮箱和密码
-		 ```
-         {
-           "email": "your_username@example.com",
-		   "password":"your_password"
-		 }
-		 ```
-	  5. 请求成功后得到返回信息中的 `token`，使用 `Bearer ` 拼接拿到的 token 作为 `Auth token` 填入 PicGo 设置中。注意 Bearer 和 返回的 token 之间有个空格，请严格按照格式填写，程序不会校验这个细节
+        ```
+        {
+          "email": "your_username@example.com",
+          "password":"your_password"
+        }
+        ```
+      5. 请求成功后得到返回信息中的 `token`，使用 `Bearer ` 拼接拿到的 token 作为 `Auth token` 填入 PicGo 设置中。注意 Bearer 和 返回的 token 之间有个空格，请严格按照格式填写，程序不会校验这个细节
 
 如果觉得项目有用，欢迎点个免费的 star ⭐️️ 激励一下我。感谢！
 
