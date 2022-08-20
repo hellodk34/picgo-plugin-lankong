@@ -13,12 +13,7 @@
 
 ## 版本日志
 
-- v1.0.1 支持兰空图床 V1 的版本正式发布。released on 2022-03-22
-- v1.0.2 增加 `Lsky Pro Version` 开关，支持兰空图床 V2。开关默认关闭，关闭代表 V1，打开即可使用 V2 版本的兰空图床 API 上传。released on 2022-03-23
-- v1.0.3 表单增加存储策略 ID 录入，仅供 V2 用户使用。V1 以及 V2 使用默认存储策略时请留空。released on 2022-03-26
-- v1.0.4 版本选择改成下拉菜单样式; https agent 代理对象的创建放在分支条件中增加程序性能。released on 2022-03-30
-- v1.0.5 增加同步删除功能，仅支持 V2。released on 2022-03-30
-- v1.0.6 修复同步删除的 bug。released on 2022-04-01
+[click me to view changelog](./changelog.md)
 
 ---
 
@@ -52,6 +47,8 @@ macOS: ~/Library/Application\ Support/picgo/
 - 填写图床的 `server url`，注意不要以 `/` 结束。比如 `https://image.example.com` ✅️，但是 `https://image.example.com/` ❌️
 - 填写 `Auth Token`
 - `Strategy ID`，存储策略 ID，如果是 V1 或 V2 使用默认存储策略的用户，请留空；除非你知道具体 ID，否则请留空
+- `Album ID`，相册 ID，只针对 V2 有效
+- `Permission`，图片权限，公开还是私有，默认是私有
 - `Sync Delete` 同步删除选项，只支持 `V2`，开启后在 PicGo 相册中删除图片可同步删除图床上的文件，默认关闭
 - `Ignore certificate error` 开关，默认关闭，请保持关闭，除非你遇到 `certificate has expired` 等证书报错才需要考虑将其开启。由于有些站点使用 Let's Encrypt 颁发的免费证书，有效期只有 90 天，在测试上传中遇到了 `certificate has expired` 错误，打开开关 `Ignore certificate error` 即可成功上传
 
@@ -90,3 +87,18 @@ macOS: ~/Library/Application\ Support/picgo/
 # 开源许可证
 
 Released under the [MIT License](https://github.com/hellodk34/picgo-plugin-lankong/blob/main/License).
+
+# 欢迎随意打赏
+
+如果您觉得我的小小工作提升了您的 workflow，欢迎随意打赏。
+
+<table width="100%">
+    <tr>
+        <th>支付宝</th>
+        <th>微信</th>
+    </tr>
+    <tr>
+        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/01/62e7eca140b2d.jpg"></td>
+        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/01/62e7eccc38702.jpg"></td>
+    </tr>
+</table>

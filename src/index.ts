@@ -1,11 +1,13 @@
 import https from 'https'
 import { ImgType } from './lib/interface'
 
+const UPLOADER = 'lankong'
+
 module.exports = (ctx) => {
   const register = () => {
-    ctx.helper.uploader.register('lankong', {
+    ctx.helper.uploader.register(UPLOADER, {
       handle,
-      name: 'lankong',
+      name: UPLOADER,
       config: config
     })
 
@@ -14,7 +16,7 @@ module.exports = (ctx) => {
   }
 
   async function onDelete(files, guiApi) {
-    let userConfig = ctx.getConfig('picBed.lankong')
+    let userConfig = ctx.getConfig('picBed.' + UPLOADER)
     const syncDelete = userConfig.syncDelete
     // 如果同步删除按钮关闭则不执行
     if (!syncDelete) {
@@ -23,10 +25,10 @@ module.exports = (ctx) => {
     const isV2 = userConfig.lskyProVersion === 'V2'
     if (!isV2) {
       ctx.emit('notification', {
-        title: `V1版本的兰空图床不支持同步删除，请关闭同步删除选项以抑制此通知`
+        title: `V1版本的兰空图床不支持同步删除, 请关闭同步删除选项以抑制此通知`
       })
     }
-    const deleteList = files.filter(each => each.type === 'lankong')
+    const deleteList = files.filter(each => each.type === UPLOADER)
     if (deleteList.length === 0) {
       return
     }
@@ -66,7 +68,7 @@ module.exports = (ctx) => {
       'Authorization': token || undefined
     }
 
-    // 如果忽略证书错误开关打开则带上 http agent 访问，否则不需要带（以提高性能）
+    // 如果忽略证书错误开关打开则带上 http agent 访问, 否则不需要带（以提高性能）
     if (ignoreCertErr) {
       let requestAgent = new https.Agent({
         // 此处需要取反 忽略证书错误 拒绝未授权证书选项
@@ -124,6 +126,11 @@ module.exports = (ctx) => {
       'Authorization': token || undefined
     }
     const strategyId = userConfig.strategyId
+    const albumId = userConfig.albumId
+    let permission = userConfig.permission.value
+    if (permission === undefined) {
+      permission = userConfig.permission
+    }
     const v2FormData = {
       file: {
         value: image,
@@ -132,14 +139,23 @@ module.exports = (ctx) => {
         }
       },
       ssl: 'true',
-      strategy_id: strategyId
+      strategy_id: strategyId,
+      album_id: albumId,
+      permission: permission
     }
-    // V2版本情况下，如果用户没有填写策略ID，删除 v2FormData 中的 key: strategy_id
+    // V2版本情况下, 如果用户没有填写策略ID, 删除 v2FormData 中的 key: strategy_id
     if (!strategyId) {
       delete v2FormData.strategy_id
     }
+    if (!albumId) {
+      delete v2FormData.album_id
+    }
+    //if (!(permission === 0 || permission === 1)) {
+    if (permission === undefined) {
+      delete v2FormData.permission
+    }
 
-    // 如果忽略证书错误开关打开则带上 http agent 访问，否则不需要带（以提高性能）
+    // 如果忽略证书错误开关打开则带上 http agent 访问, 否则不需要带（以提高性能）
     if (ignoreCertErr) {
       let requestAgent = new https.Agent({
         // 此处需要取反 忽略证书错误 拒绝未授权证书选项
@@ -163,7 +179,7 @@ module.exports = (ctx) => {
     }
   }
   const handle = async (ctx) => {
-    let userConfig = ctx.getConfig('picBed.lankong')
+    let userConfig = ctx.getConfig('picBed.' + UPLOADER)
     if (!userConfig) {
       throw new Error('Can\'t find uploader config')
     }
@@ -200,7 +216,7 @@ module.exports = (ctx) => {
   }
 
   const config = ctx => {
-    let userConfig = ctx.getConfig('picBed.lankong')
+    let userConfig = ctx.getConfig('picBed.' + UPLOADER)
     if (!userConfig) {
       userConfig = {}
     }
@@ -248,6 +264,32 @@ module.exports = (ctx) => {
         alias: 'Strategy ID'
       },
       {
+        name: 'albumId',
+        type: 'input',
+        default: userConfig.albumId,
+        required: false,
+        message: '选填, V2生效',
+        alias: 'Album ID'
+      },
+      {
+        name: 'permission',
+        type: 'list',
+        default: userConfig.permission,
+        message: 'set permission',
+        choices: [
+          {
+            name: 'private(default)',
+            value: 0
+          },
+          {
+            name: 'public',
+            value: 1
+          }
+        ],
+        required: false,
+        alias: 'Permission'
+      },
+      {
         name: 'ignoreCertErr',
         type: 'confirm',
         default: userConfig.ignoreCertErr || false,
@@ -259,14 +301,14 @@ module.exports = (ctx) => {
         name: 'syncDelete',
         type: 'confirm',
         default: userConfig.syncDelete || false,
-        message: '是否同步删除，只支持V2',
+        message: '是否同步删除, 只支持V2',
         required: true,
         alias: 'Sync Delete'
       }
     ]
   }
   return {
-    uploader: 'lankong',
+    uploader: UPLOADER,
     config: config,
     register
     // guiMenu
