@@ -150,8 +150,7 @@ module.exports = (ctx) => {
     if (!albumId) {
       delete v2FormData.album_id
     }
-    //if (!(permission === 0 || permission === 1)) {
-    if (permission === undefined) {
+    if (!(permission === 0 || permission === 1)) {
       delete v2FormData.permission
     }
 
@@ -274,7 +273,7 @@ module.exports = (ctx) => {
       {
         name: 'permission',
         type: 'list',
-        default: userConfig.permission,
+        default: userConfig.permission || 'private(default)',
         message: 'set permission',
         choices: [
           {

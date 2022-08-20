@@ -6,4 +6,4 @@
 - v1.0.4 版本选择改成下拉菜单样式; https agent 代理对象的创建放在分支条件中增加程序性能。released on 2022-03-30
 - v1.0.5 增加同步删除功能，仅支持 V2。released on 2022-03-30
 - v1.0.6 修复同步删除的 bug。released on 2022-04-01
-- v1.1.0 跟进兰空图床付费版根据相册 id，权限上传图片的 api 功能，新增 PicGo lankong 插件的相关设置选项并提供功能。released on 2022-08-20
+- v1.1.2 跟进兰空图床付费版根据相册 id，权限上传图片的 api 功能，新增 PicGo lankong 插件的相关设置选项并提供功能。released on 2022-08-20
