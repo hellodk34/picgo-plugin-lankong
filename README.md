@@ -41,7 +41,7 @@ macOS: ~/Library/Application\ Support/picgo/
 
 ## 3. 使用方法
 
-![20220330163603](https://img.github.luxe/2022/29d1b7c6bacb6.png)
+![lankong新设置](https://image.940304.xyz/i/2022/08/20/630092cd733c5.jpg)
 
 - `Lsky Pro Version` 在下拉菜单中选择 Lsky Pro 版本，`V1` 还是 `V2`，默认 `V1`
 - 填写图床的 `server url`，注意不要以 `/` 结束
