@@ -41,7 +41,7 @@ macOS: ~/Library/Application\ Support/picgo/
 
 ## 3. 使用方法
 
-![lankong新设置](https://image.940304.xyz/i/2022/08/20/630092cd733c5.jpg)
+![兰空picgo插件lankong 新版设置截图.jpg](https://image.940304.xyz/i/2022/08/20/6300edb4539f7.jpg)
 
 - `Lsky Pro Version` 在下拉菜单中选择 Lsky Pro 版本，`V1` 还是 `V2`，默认 `V1`
 - 填写图床的 `server url`，注意不要以 `/` 结束
@@ -100,7 +100,7 @@ Released under the [MIT License](https://github.com/hellodk34/picgo-plugin-lanko
         <th>微信</th>
     </tr>
     <tr>
-        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/01/62e7eca140b2d.jpg"></td>
-        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/01/62e7eccc38702.jpg"></td>
+        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/20/6300eff29cd57.jpg"></td>
+        <td><img alt="若图片裂开科学即可" src="https://image.940304.xyz/i/2022/08/20/6300effcca409.jpg"></td>
     </tr>
 </table>
