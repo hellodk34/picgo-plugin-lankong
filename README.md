@@ -44,8 +44,10 @@ macOS: ~/Library/Application\ Support/picgo/
 ![20220330163603](https://img.github.luxe/2022/29d1b7c6bacb6.png)
 
 - `Lsky Pro Version` 在下拉菜单中选择 Lsky Pro 版本，`V1` 还是 `V2`，默认 `V1`
-- 填写图床的 `server url`，注意不要以 `/` 结束。比如 `https://image.example.com` ✅️，但是 `https://image.example.com/` ❌️
-- 填写 `Auth Token`
+- 填写图床的 `server url`，注意不要以 `/` 结束
+  - `https://image.example.com` ✅️
+  - `https://image.example.com/` ❌️
+- 填写 `Auth Token` 使用 `Bearer ` 拼接
 - `Strategy ID`，存储策略 ID，如果是 V1 或 V2 使用默认存储策略的用户，请留空；除非你知道具体 ID，否则请留空
 - `Album ID`，相册 ID，只针对 V2 有效
 - `Permission`，图片权限，公开还是私有，默认是私有
