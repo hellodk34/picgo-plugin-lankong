@@ -59,9 +59,9 @@ macOS: ~/Library/Application\ Support/picgo/
 ### 1. 使用 cURL(**推荐**)
 
 ```
-# curl -X POST -H "Accept: application/json" \
-  -d '{"email=YOUR_EMAIL_ADDRESS&password=YOUR_PASSWORD"}' \
-  https://image.example.com/api/v1/tokens
+curl --location --request POST 'https://your.domain/api/v1/tokens' \
+--form 'email="your_email@address"' \
+--form 'password="your_passwd"'
 ```
 
 此命令仅适用于 V2，V1 用户只需要进入个人设置页面复制、粘贴使用即可。
