@@ -38,7 +38,7 @@ module.exports = (ctx) => {
       const deleteParam = GenDeleteParam(item, userConfig)
       let body = await ctx.Request.request(deleteParam)
 
-      body = JSON.parse(body)
+      body = typeof body === 'string' ? JSON.parse(body) : body
       if (body.status === true) {
         ctx.emit('notification', {
           title: `${item.imgUrl} 同步删除成功`,
